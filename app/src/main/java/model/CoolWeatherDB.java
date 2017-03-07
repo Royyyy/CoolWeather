@@ -11,7 +11,7 @@ import java.util.List;
 import db.CoolWeatherOpenHelper;
 
 /**
- * Created by chok on 2017/3/6.
+ * Created by Roy on 2017/3/6.
  */
 public class CoolWeatherDB {
 
