@@ -1,6 +1,9 @@
 package com.coolweather.roy.coolweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,6 +71,13 @@ public class ChooseAreaActivityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("city_selected",false)){
+            Intent intent = new Intent(this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_choose_area);
         listView = (ListView)findViewById(R.id.list_view);
@@ -84,6 +94,12 @@ public class ChooseAreaActivityActivity extends AppCompatActivity {
                 }else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(index);
                     queryCounties();
+                }else if (currentLevel == LEVEL_COUNTY){
+                    String countyCode = countyList.get(index).getCountyCode();
+                    Intent intent = new Intent(ChooseAreaActivityActivity.this,WeatherActivity.class);
+                    intent.putExtra("county_code",countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
 
@@ -155,10 +171,10 @@ public class ChooseAreaActivityActivity extends AppCompatActivity {
     private void queryFromServer(final String code,final String type){
         String address;
         if (!TextUtils.isEmpty(code)){
-            address = "http://www.weather.com.cn/datat/list3/city" + code + ".xml";
+            address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";
 
         }else{
-            address = "http://www.weather.com.cn/datat/list3/city.xml";
+            address = "http://www.weather.com.cn/data/list3/city.xml";
         }
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
